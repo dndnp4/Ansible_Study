@@ -1,0 +1,15 @@
+---
+- name: fetch
+  hosts: web
+
+  tasks:
+  - name: vsftpd
+    yum:
+      name: vsftpd
+      state: present
+
+  - name: pull remote file to local
+    fetch:
+      src: "/etc/vsftpd/vsftpd.conf"
+      dest: "/root"
+  

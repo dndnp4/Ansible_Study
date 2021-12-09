@@ -1,0 +1,19 @@
+---
+- name: lab2
+  hosts: localhost
+  gather_facts: no
+  
+  tasks:
+  - name: Iterate over hashes
+    debug:
+      msg: "asd '{{item.key}}' '{{item.value}}'"
+    
+    # dict2items : type casting dict to object
+    
+    loop: "{{ my_car | dict2items }}"
+    vars:
+      my_car:
+        a: 1
+        b: 2
+        c: 3
+    

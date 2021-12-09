@@ -1,0 +1,12 @@
+---
+- name: Variable Test
+  hosts: localhost
+  vars_files:
+    - var.yaml
+
+  tasks:
+  - name: Debug
+    debug:
+      msg:
+      - "gdgd"
+      - "{{babo}}"

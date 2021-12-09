@@ -1,0 +1,26 @@
+---
+- name: lab6
+  hosts: localhost
+  # gather_facts: no
+
+  vars:
+    os:
+    - RedHat
+    - CentOS
+    - Fedora
+    - Ubuntu
+
+  tasks:
+    - name: show
+      debug:
+        msg: "{{ ansible_os_family }}"
+    
+    - name: install
+      shell: "echo hello world"
+      when: ansible_os_family in os
+      register: prt
+
+    - name: show2
+      debug:
+        var: prt.stdout
+

@@ -1,0 +1,42 @@
+---
+- name: yum install -y httpd
+  hosts: localhost
+
+  # vars:
+  #   package1: "httpd"
+  #   package2: "vsftpd"
+  vars_files:
+  - var.yaml
+
+  tasks:
+  - name: "{{ package1 }} install"
+    yum:
+      name: "{{ package1 }}"
+      state: present
+    when: ansible_os_family == "RedHat" and ansible_user_id == "root"
+
+  - name: "{{ package2 }} install"
+    yum:
+      name: "{{ package2 }}"
+      state: present
+    when: ansible_os_family == "RedHat" and ansible_user_id == "ec2-user"
+
+  - name: "{{ package1 }} start"
+    systemd:
+      name: "{{ package1 }}"
+      state: started
+      enabled: yes
+
+  - name: replace httpd configure
+    replace:
+      path: "/etc/httpd/conf/httpd.conf"
+      regexp: "^Listen 80$"
+      replace: "Listen 8080"
+    notify:
+      - httpd restart
+  
+  handlers:
+  - name: httpd restart
+    systemd:
+      name: "{{ package1 }}"
+      state: restarted

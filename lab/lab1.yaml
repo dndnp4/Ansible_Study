@@ -1,0 +1,21 @@
+---
+- name: lab1
+  hosts: localhost
+  gather_facts: no
+  
+  tasks:
+  - name: Iterate over hashes
+    debug:
+      msg:
+        - "asd '{{item.a}}'"
+        - "'{{item.b}}' zzzzzzzzzzzz"
+        - "zzzz {{item.c}} fdg"
+    
+    # loop:
+    with_items:
+      - {a: 'a1', b: 'b1', c: 'c1'}
+      - {a: 'a2', b: 'b2', c: 'c2'}
+      - {a: 'a3', b: 'b3', c: 'c3'}
+      - {a: 'a4', b: 'b4', c: 'c4'}
+      - {a: 'a5', b: 'b5', c: 'c5'}
+    

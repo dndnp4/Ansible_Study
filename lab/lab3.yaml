@@ -1,0 +1,16 @@
+---
+- name: lab3
+  hosts: localhost
+  gather_facts: no
+  
+  tasks:
+  - name: Iterate over hashes
+    shell: "echo asiodgjaosjdg : {{ item }}"
+    loop:
+      - tiger
+      - lion
+    register: results1
+
+  - name: show
+    debug:
+      var: results1 | json_query('results[*].stdout')

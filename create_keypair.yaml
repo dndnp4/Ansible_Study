@@ -1,0 +1,30 @@
+---
+- name: create keypair
+  hosts: all
+  # hosts: localhost
+  gather_facts: false
+  ignore_errors: true
+
+  tasks:
+  # - name: create keypair
+  #   # hosts: localhost
+  #   # connection: localhost
+  #   shell: "ssh-keygen -t rsa -b 2048 -f /root/.ssh/id_rsa -q -N '' <<< y"
+
+  - name: rm authorized_keys
+    # connection: all
+    file:
+      path: '/root/.ssh/authorized_keys'
+      state: absent
+
+  - name: touch authorized_keys
+    # connection: all
+    file:
+      path: '/root/.ssh/authorized_keys'
+      state: touch
+
+  - name: copy public key
+    # connection: all
+    lineinfile:
+      path: '/root/.ssh/authorized_keys'
+      line: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDWRhH1Dxn1Zp87vSxwOF54FJrOhK50SdsHT5cJPycdZXQzLRGrTKFvjcwsKhiuDUx0ty8Qj1tsRCYlQIAAW0hjQYNbPypqrtptnC34S7e60VlCZbrislwwLE5nTA/r+6NN253PhTQNB+50arED5yxaBsI6O54+qbg5yEdgH07CUyZBGwdI1yXNXpnD4SV6Y+kbxFWY63q4UxvgvhF9t+vLS8kUTFdQUPWtCeSnD4RS1RVI6MdsTT9hUOVZJ9gC1cWN66B3aLjUTUCAZIek5VxRk+faiuxzg2qMX+DAi0ZNawVG3mR37Q1KAdi2pVMQ1NKgyWsVw5Lpg913tibHZsz/O+rxMvT42rmsGqxVP321oihAv8tZFppWqwtRsm7YrCwkn2Fa8HAZNX0cuvpGHOw69X0oj2iUKy8XrOmY9mWkuGXTyGc/X9UuPnot2wwvrEATfttHucj0Tx6RQN9pikE7HeuuE4lwsZB7DQJkRrwI2z25r+kHHoEVngL3PyWDbSM= root@ip-10-0-1-10.ap-northeast-2.compute.internal'

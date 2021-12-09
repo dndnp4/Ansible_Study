@@ -1,0 +1,89 @@
+---
+- name: install
+  hosts: web
+  gather_facts: false
+  ignore_errors: true
+
+  tasks:
+  - name: install pkg
+    yum:
+      name: "{{ item }}"
+      state: present
+    with_items:
+    - wget
+    - httpd
+
+  - name: enable php
+    shell: "amazon-linux-extras enable php7.2"
+
+  - name: enable lamp
+    shell: "amazon-linux-extras enable lamp-mariadb10.2-php7.2"
+
+  - name: install lamp
+    yum:
+      name: "{{ item }}"
+      state: present
+    with_items:
+    - php-cli
+    - php-pdo
+    - php-fpm
+    - php-json
+    - php-mysqlnd
+    - mariadb
+
+  - name: wget
+    get_url:
+      url: "https://ko.wordpress.org/latest-ko_KR.tar.gz"
+      dest: /tmp
+
+  - name: extract wordpress
+    shell: "tar xvfz /tmp/wordpress-5.8.2-ko_KR.tar.gz -C /tmp"
+    tags: a1
+
+  - name: copy wordpress
+    shell: "cp -a /tmp/wordpress/* /var/www/html/"
+    tags: a2
+
+  - name: change own, group
+    shell: "chown -R apache.apache /var/www/html/"
+    tags: a3
+
+  - name: change apache config
+    lineinfile:
+      path: /etc/httpd/conf/httpd.conf
+      regexp: 'DirectoryIndex index.html'
+      line: 'DirectoryIndex index.php'
+    tags: a4
+
+# using remote_src #
+
+  - name: copy wordpress config
+    copy:
+      remote_src: yes
+      src: /var/www/html/wp-config-sample.php
+      dest: /var/www/html/wp-config.php
+    tags: a5
+
+  - name: edit wordpress config
+    replace:
+      path: /var/www/html/wp-config.php
+      regexp: "{{ item.before }}"
+      replace: "{{ item.after }}"
+    with_items:
+    - { before: "database_name_here", after: "test" }
+    - { before: "username_here", after: "admin" }
+    - { before: "password_here", after: "wlstjd11!" }
+    - { before: "localhost", after: "test.cenvguenpdcx.ap-northeast-2.rds.amazonaws.com" }
+    tags: a6
+
+  - name: start apache daemon
+    systemd:
+      name: httpd
+      state: started
+    tags: a7
+
+  - name: create health.html
+    file:
+      path: /var/www/html/health.html
+      state: touch
+    tags: a8

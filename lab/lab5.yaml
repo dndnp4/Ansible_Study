@@ -1,0 +1,19 @@
+---
+- name: lab5
+  hosts: localhost
+  gather_facts: no
+  vars:
+    x: 10
+    y: 15
+    list: [10, 20, 30]
+  
+  tasks:
+  - name: lab5-1
+    debug:
+      msg: "x == y ???"
+    when: x == y
+
+  - name: lab5-2
+    debug:
+      msg: "x in list ?????"
+    when: x in list
